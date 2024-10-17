@@ -1,153 +1,130 @@
 ﻿---
-import { getPortfolioItems } from '../services/apiService';
+import * as THREE from 'three';
 
+// Obtener datos del portafolio desde la API (simulado aquí con datos ficticios)
 let portfolioItems = [];
-
 try {
-  // Obtener todos los elementos del portafolio al cargar la página
-  portfolioItems = await getPortfolioItems();
+  portfolioItems = await getPortfolioItems(); // Asegúrate de que esta función esté correctamente implementada en tu servicio
 } catch (error) {
   console.error("Error al obtener los elementos del portafolio:", error);
 }
 ---
 
 <style>
-  /* Estilos generales */
   body {
     font-family: 'Inter', sans-serif;
-    background-color: #1e1e2f;
-    color: #ffffff;
+    background: #1a1a2e;
+    color: #eaeaea;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow-x: hidden;
   }
 
-  /* Contenedor principal */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
+  h1 {
     text-align: center;
-    position: relative;
-    z-index: 2;
+    font-size: 3rem;
+    color: #ff6f61;
+    margin-top: 1.5rem;
   }
 
-  /* Canvas de Three.js */
-  #three-canvas {
-    position: absolute;
+  #portfolio-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem auto;
+    width: 80%;
+    max-width: 1200px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+  li {
+    background: #162447;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  li:hover {
+    transform: scale(1.05);
+    background: #ff6f61;
+  }
+
+  #canvas-container {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
-  }
-
-  /* Encabezado */
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
-    color: #00aaff;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-  }
-
-  /* Lista de portafolio */
-  .portfolio-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-    padding: 0;
-    list-style: none;
-  }
-
-  /* Elemento del portafolio */
-  .portfolio-item {
-    background: #2c2c3c;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    text-align: left;
-  }
-
-  .portfolio-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-  }
-
-  .portfolio-item h2 {
-    font-size: 1.5rem;
-    margin: 0 0 0.5rem 0;
-    color: #00aaff;
-  }
-
-  .portfolio-item p {
-    font-size: 1rem;
-    color: #bdbdbd;
+    z-index: -1;
   }
 </style>
 
-<canvas id="three-canvas"></canvas>
-<div class="container">
-  <h1>Mi Portafolio</h1>
-  <ul class="portfolio-list">
+<div id="canvas-container"></div>
+
+<h1>Portafolio de Juan Andres Vallejo Acosta</h1>
+<div id="portfolio-container">
+  <ul>
     {portfolioItems.map((item) => (
-      <li class="portfolio-item" key={item._id}>
-        <h2>{item.name}</h2>
-	<p>{item}</p>
-        <p>{item.description || "Descripción no disponible"}</p>
-      </li>
+      <li key={item._id}>{item.name}</li>
     ))}
   </ul>
 </div>
 
-<!-- Mover el código de Three.js al cliente -->
-<script client:load>
-  // Configuración de Three.js
+<script is:inline>
   import * as THREE from 'three';
 
-  // Configuración de la escena, la cámara y el renderizador
+  // Crear la escena, cámara y renderizador de Three.js
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true });
+  const renderer = new THREE.WebGLRenderer({ alpha: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
+  document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-  // Ajustar la posición de la cámara
-  camera.position.z = 5;
+  // Crear una geometría animada (ej. torus)
+  const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+  const material = new THREE.MeshStandardMaterial({ color: 0xff6f61, metalness: 0.7, roughness: 0.2 });
+  const torus = new THREE.Mesh(geometry, material);
+  scene.add(torus);
 
-  // Crear geometría y material para la animación (partículas)
-  const particleCount = 500;
-  const particlesGeometry = new THREE.BufferGeometry();
-  const particlesMaterial = new THREE.PointsMaterial({
-    color: 0x00aaff,
-    size: 0.05,
-  });
+  // Añadir luces
+  const pointLight = new THREE.PointLight(0xffffff);
+  pointLight.position.set(5, 5, 5);
+  scene.add(pointLight);
 
-  // Configurar posiciones aleatorias para las partículas
-  const positions = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount * 3; i++) {
-    positions[i] = (Math.random() - 0.5) * 10; // Aleatorio entre -5 y 5
-  }
-  particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const ambientLight = new THREE.AmbientLight(0xffffff);
+  scene.add(ambientLight);
 
-  // Crear el sistema de partículas
-  const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-  scene.add(particles);
+  // Configurar la posición de la cámara
+  camera.position.z = 30;
 
-  // Función de animación para la escena
+  // Animar la escena
   const animate = () => {
     requestAnimationFrame(animate);
-
-    // Rotar el sistema de partículas lentamente
-    particles.rotation.y += 0.001;
-
-    // Renderizar la escena
+    torus.rotation.x += 0.01;
+    torus.rotation.y += 0.005;
     renderer.render(scene, camera);
   };
+
   animate();
 
-  // Ajustar el tamaño del canvas al redimensionar la ventana
+  // Manejar el redimensionamiento de la ventana
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
