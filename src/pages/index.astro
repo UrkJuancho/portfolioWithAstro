@@ -1,0 +1,156 @@
+﻿---
+import { getPortfolioItems } from '../services/apiService';
+
+let portfolioItems = [];
+
+try {
+  // Obtener todos los elementos del portafolio al cargar la página
+  portfolioItems = await getPortfolioItems();
+} catch (error) {
+  console.error("Error al obtener los elementos del portafolio:", error);
+}
+---
+
+<style>
+  /* Estilos generales */
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #1e1e2f;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  /* Contenedor principal */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Canvas de Three.js */
+  #three-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  /* Encabezado */
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: #00aaff;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  /* Lista de portafolio */
+  .portfolio-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Elemento del portafolio */
+  .portfolio-item {
+    background: #2c2c3c;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: left;
+  }
+
+  .portfolio-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .portfolio-item h2 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem 0;
+    color: #00aaff;
+  }
+
+  .portfolio-item p {
+    font-size: 1rem;
+    color: #bdbdbd;
+  }
+</style>
+
+<canvas id="three-canvas"></canvas>
+<div class="container">
+  <h1>Mi Portafolio</h1>
+  <ul class="portfolio-list">
+    {portfolioItems.map((item) => (
+      <li class="portfolio-item" key={item._id}>
+        <h2>{item.name}</h2>
+	<p>{item}</p>
+        <p>{item.description || "Descripción no disponible"}</p>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<!-- Mover el código de Three.js al cliente -->
+<script client:load>
+  // Configuración de Three.js
+  import * as THREE from 'three';
+
+  // Configuración de la escena, la cámara y el renderizador
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+
+  // Ajustar la posición de la cámara
+  camera.position.z = 5;
+
+  // Crear geometría y material para la animación (partículas)
+  const particleCount = 500;
+  const particlesGeometry = new THREE.BufferGeometry();
+  const particlesMaterial = new THREE.PointsMaterial({
+    color: 0x00aaff,
+    size: 0.05,
+  });
+
+  // Configurar posiciones aleatorias para las partículas
+  const positions = new Float32Array(particleCount * 3);
+  for (let i = 0; i < particleCount * 3; i++) {
+    positions[i] = (Math.random() - 0.5) * 10; // Aleatorio entre -5 y 5
+  }
+  particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+  // Crear el sistema de partículas
+  const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+  scene.add(particles);
+
+  // Función de animación para la escena
+  const animate = () => {
+    requestAnimationFrame(animate);
+
+    // Rotar el sistema de partículas lentamente
+    particles.rotation.y += 0.001;
+
+    // Renderizar la escena
+    renderer.render(scene, camera);
+  };
+  animate();
+
+  // Ajustar el tamaño del canvas al redimensionar la ventana
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+</script>
