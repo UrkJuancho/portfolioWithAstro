@@ -114,26 +114,34 @@ try {
 
   <div class="container">
     <h1>Portafolio de Juan Andres Vallejo Acosta</h1>
-
+  
     <div class="profile">
-      <img src={portfolioData[0].personalData.profilePicture} alt="Foto de perfil de Juan Andres">
-      <h2>{portfolioData[0].personalData.fullName}</h2>
-      <p>{portfolioData[0].personalData.documentType}: {portfolioData[0].personalData.documentNumber}</p>
-      <p><strong>Fecha de nacimiento:</strong> {portfolioData[0].personalData.dateOfBirth}</p>
-      <p><strong>Nacionalidad:</strong> {portfolioData[0].personalData.nationality}</p>
-      <p><strong>Estado civil:</strong> {portfolioData[0].personalData.maritalStatus}</p>
+      {portfolioData[0]?.personalData && (
+        <>
+          <img src={portfolioData[0].personalData.profilePicture} alt="Foto de perfil de Juan Andres" />
+          <h2>{portfolioData[0].personalData.fullName}</h2>
+          <p>{portfolioData[0].personalData.documentType}: {portfolioData[0].personalData.documentNumber}</p>
+          <p><strong>Fecha de nacimiento:</strong> {portfolioData[0].personalData.dateOfBirth}</p>
+          <p><strong>Nacionalidad:</strong> {portfolioData[0].personalData.nationality}</p>
+          <p><strong>Estado civil:</strong> {portfolioData[0].personalData.maritalStatus}</p>
+        </>
+      )}
     </div>
-
+  
     <div class="contact-info">
-      <h2 class="section-title">Información de Contacto</h2>
-      <p><strong>Teléfono:</strong> {portfolioData[0].personalData.contactInfo.phoneNumber}</p>
-      <p><strong>Email:</strong> {portfolioData[0].personalData.contactInfo.email}</p>
-      <p><strong>Dirección:</strong> {portfolioData[0].personalData.contactInfo.address.street}, {portfolioData[0].personalData.contactInfo.address.city}, {portfolioData[0].personalData.contactInfo.address.department}, {portfolioData[0].personalData.contactInfo.address.postalCode}</p>
+      {portfolioData[0]?.personalData?.contactInfo && (
+        <>
+          <h2 class="section-title">Información de Contacto</h2>
+          <p><strong>Teléfono:</strong> {portfolioData[0].personalData.contactInfo.phoneNumber}</p>
+          <p><strong>Email:</strong> {portfolioData[0].personalData.contactInfo.email}</p>
+          <p><strong>Dirección:</strong> {portfolioData[0].personalData.contactInfo.address.street}, {portfolioData[0].personalData.contactInfo.address.city}, {portfolioData[0].personalData.contactInfo.address.department}, {portfolioData[0].personalData.contactInfo.address.postalCode}</p>
+        </>
+      )}
     </div>
-
+  
     <div class="experience">
       <h2 class="section-title">Experiencia Laboral</h2>
-      {portfolioData[0].workExperience.map((job) => (
+      {portfolioData[0]?.workExperience?.map((job) => (
         <div class="experience-item">
           <p><strong>{job.companyName}</strong> - {job.position}</p>
           <p><em>{job.location.city}, {job.location.department}</em></p>
@@ -141,10 +149,10 @@ try {
         </div>
       ))}
     </div>
-
+  
     <div class="education">
       <h2 class="section-title">Formación Académica</h2>
-      {portfolioData[0].academicData.map((edu) => (
+      {portfolioData[0]?.academicData?.map((edu) => (
         <div class="education-item">
           <p><strong>{edu.institution}</strong></p>
           <p>{edu.degree} ({edu.status})</p>
@@ -152,28 +160,28 @@ try {
         </div>
       ))}
     </div>
-
+  
     <div class="skills">
       <h2 class="section-title">Habilidades</h2>
-      {portfolioData[0].skills.map((skill) => (
+      {portfolioData[0]?.skills?.map((skill) => (
         <div class="skill-item">
           <p><strong>{skill.name}:</strong> {skill.proficiencyLevel}</p>
         </div>
       ))}
     </div>
-
+  
     <div class="languages">
       <h2 class="section-title">Idiomas</h2>
-      {portfolioData[0].languages.map((lang) => (
-        <div class="language-item">
+      {portfolioData[0]?.languages?.map((lang) => (
+        <div class="language-item" >
           <p><strong>{lang.language}:</strong> {lang.proficiencyLevel}</p>
         </div>
       ))}
     </div>
-
+  
     <div class="certifications">
       <h2 class="section-title">Certificaciones</h2>
-      {portfolioData[0].certifications.map((cert) => (
+      {portfolioData[0]?.certifications?.map((cert) => (
         <div class="certification-item">
           <p><strong>{cert.title}</strong> - {cert.institution}</p>
           <p><em>Emitido el {cert.issueDate}</em></p>
@@ -181,6 +189,7 @@ try {
       ))}
     </div>
   </div>
+  
 
   <script type="module">
     import * as THREE from 'https://cdn.skypack.dev/three@0.140.0';
