@@ -1,5 +1,125 @@
 ﻿---
 let portfolioData: any = ['vacio'];
+let portfolioWithData: any = [
+  {
+  "_id": { "$oid": "671413ed222e152b17afcc2c" },
+  "personalData": {
+    "fullName": "Juan Andres Vallejo Acosta",
+    "documentType": "C.C.",
+    "documentNumber": "1193275737",
+    "dateOfBirth": "06 de Septiembre de 2001",
+    "placeOfBirth": "San Juan de Pasto",
+    "nationality": "Colombiano",
+    "maritalStatus": "soltero",
+    "contactInfo": {
+      "phoneNumber": "3017147197",
+      "email": "juanvallejo7601@gmail.com",
+      "address": {
+        "street": "Manzana S Casa 16 B/ Panoramico 2",
+        "city": "San Juan de Pasto",
+        "department": "Nariño",
+        "postalCode": "560001"
+      }
+    },
+    "profilePicture": "https://avatars.githubusercontent.com/u/104238823?v=4"
+  },
+  "academicData": [
+    {
+      "institution": "Escuela Normal Superior de Pasto",
+      "degree": "Preescolar y Basica Primaria",
+      "startDate": "2008-02-01",
+      "endDate": "2011-11-02",
+      "status": "Graduado"
+    },
+    {
+      "institution": "Liceo Central de Nariño",
+      "degree": "Secundaria/Bachillerato",
+      "startDate": "2012-06-01",
+      "endDate": "2018-11-02",
+      "status": "Graduado"
+    },
+    {
+      "institution": "Servicio Nacional de Aprendizaje - SENA",
+      "degree": "Tecnico en Mantenimiento de Equipos de Computo",
+      "startDate": "2016-02-01",
+      "endDate": "2018-11-02",
+      "status": "Graduado"
+    },
+    {
+      "institution": "Instituto Colsup",
+      "degree": "Tecnico en Sistemas y Las TIC",
+      "startDate": "2019-02-01",
+      "endDate": "2020-11-02",
+      "status": "Graduado"
+    },
+    {
+      "institution": "Universidad Autonoma de Nariño",
+      "degree": "Ingeniero Informatico",
+      "startDate": "2020-03-01",
+      "endDate": "Actualidad",
+      "status": "En curso"
+    }
+  ],
+  "workExperience": [
+    {
+      "companyName": "Prevenir Descuentos Medicos",
+      "position": "Desarrollador Web",
+      "location": {
+        "city": "San Juan de Pasto",
+        "department": "Nariño"
+      },
+      "startDate": "2023-06-01",
+      "endDate": "2024-07-31",
+      "responsibilities": [
+        "Apoyar a la seccion de desarrollo web, con modulos y componentes reusables, para un mejor uso de ellos mismos en la pagina, y creacion de algunos modulos importantes como historial de citas, ficha general por paciente, registros clinicos y formularios que tengan que ver con el ambiente medico"
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "name": "HTML",
+      "proficiencyLevel": "Avanzado"
+    },
+    {
+      "name": "CSS",
+      "proficiencyLevel": "Avanzado"
+    },
+    {
+      "name": "TypeScript",
+      "proficiencyLevel": "Avanzado"
+    },
+    {
+      "name": "JavaScript",
+      "proficiencyLevel": "Avanzado"
+    },
+    {
+      "name": "Angular",
+      "proficiencyLevel": "Avanzado"
+    },
+    {
+      "name": "React",
+      "proficiencyLevel": "Intermedio"
+    }
+  ],
+  "languages": [
+    {
+      "language": "Español",
+      "proficiencyLevel": "Lengua Nativa"
+    },
+    {
+      "language": "Ingles",
+      "proficiencyLevel": "Conversacional"
+    }
+  ],
+  "certifications": [
+    {
+      "title": "Certificado en Ciberseguridad para pequeños y grandes negocios en la industria",
+      "institution": "Incibe - España",
+      "issueDate": "2024-04-22"
+    }
+  ]
+}
+]
 
 // Hacer la petición GET para obtener todos los datos del portafolio
 try {
@@ -7,11 +127,13 @@ try {
   const response = await fetch('http://api-portfolio-rust.vercel.app/api/portfolio');
   if (!response.ok) {
     throw new Error('Error al obtener los datos del portafolio');
+    portfolioData = portfolioWithData
   }
   portfolioData = await response.json();
   console.log('Datos del portafolio cargados:', portfolioData);
 } catch (error) {
   console.error('Error en la petición GET:', error.message);
+    portfolioData = portfolioWithData
 }
 ---
 
