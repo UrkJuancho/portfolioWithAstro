@@ -182,6 +182,79 @@ try {
     </div>
   </div>
 
-  
+  <script type="module">
+    import * as THREE from 'https://cdn.skypack.dev/three@0.140.0';
+
+// Configuración de la escena de Three.js
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.getElementById('threejs-container').appendChild(renderer.domElement);
+
+// Geometría de una esfera para animación
+const geometry = new THREE.SphereGeometry(5, 32, 32);
+const material = new THREE.MeshBasicMaterial({ color: 0x8A2BE2, wireframe: true });
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+// Configurar la cámara
+camera.position.z = 20;
+
+// Agregar partículas al fondo
+const particleCount = 2000;
+const particlesGeometry = new THREE.BufferGeometry();
+const particlesMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.5 });
+const positions = new Float32Array(particleCount * 3);
+
+for (let i = 0; i < particleCount; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 500; // x
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 500; // y
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 500; // z
+}
+
+particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+scene.add(particles);
+
+// Manejo de mouse
+let mouseX = 0, mouseY = 0;
+
+document.addEventListener('mousemove', (event) => {
+    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+});
+
+// Animación de la esfera y partículas
+const animate = function () {
+    requestAnimationFrame(animate);
+
+    // Rotación de la esfera
+    sphere.rotation.x += 0.01;
+    sphere.rotation.y += 0.01;
+
+    // Movimiento de la esfera con el mouse
+    sphere.position.x = mouseX * 5; // Movimiento de la esfera en el eje X
+    sphere.position.y = mouseY * 5; // Movimiento de la esfera en el eje Y
+
+    // Animación de partículas
+    particles.rotation.x += 0.0005;
+    particles.rotation.y += 0.001;
+
+    renderer.render(scene, camera);
+};
+
+animate();
+
+// Manejar el redimensionamiento de la ventana
+window.addEventListener('resize', () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+});
+
+  </script>
 </body>
 </html>
