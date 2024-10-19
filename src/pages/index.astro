@@ -3,7 +3,8 @@ let portfolioData: any = ['vacio'];
 
 // Hacer la petición GET para obtener todos los datos del portafolio
 try {
-  const response = await fetch('http://localhost:3000/api/portfolio');
+  // const response = await fetch('http://localhost:3000/api/portfolio');
+  const response = await fetch('http://api-portfolio-rust.vercel.app/api/portfolio');
   if (!response.ok) {
     throw new Error('Error al obtener los datos del portafolio');
   }
